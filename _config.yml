@@ -14,7 +14,7 @@ github_repo: "Blog"
 
 # OPTIONAL: override baseurl and url if using a custom domain
 # Note: leave out the trailing / from this value. 
-url: "https://Sjerrul.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://sjerrul.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 ###########################################################
 #########  Special Instructions for baseurl ###############
@@ -34,13 +34,13 @@ url: "https://Sjerrul.github.io" # the base hostname & protocol for your site, e
 #
 # 3. You must replace the parameter `baseurl` in _action_files/settings.ini with the same value as you set here but WITHOUT QUOTES.
 #
-baseurl: "/Blog" # the subpath of your site, e.g. "/blog".
+baseurl: "/blog" # the subpath of your site, e.g. "/blog".
 
 # Github and twitter are optional:
 minima:
   social_links:
     twitter: fastdotai
-    github: fastai
+    github: Sjerrul
 
 # Set this to true to get LaTeX math equation support
 use_math: 
