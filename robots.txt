@@ -1,1 +1,1 @@
-Sitemap: https://sjerrul.github.io/Blog/sitemap.xml
+Sitemap: https://sjerrul.github.io/blog/sitemap.xml

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://sjerrul.github.io/Blog/markdown/2020/01/14/test-markdown-post.html</loc>
+<loc>https://sjerrul.github.io/blog/markdown/2020/01/14/test-markdown-post.html</loc>
 <lastmod>2020-01-14T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://sjerrul.github.io/Blog/2020/01/28/My-First-Post.html</loc>
+<loc>https://sjerrul.github.io/blog/2020/01/28/My-First-Post.html</loc>
 <lastmod>2020-01-28T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://sjerrul.github.io/Blog/jupyter/2020/02/20/test.html</loc>
+<loc>https://sjerrul.github.io/blog/jupyter/2020/02/20/test.html</loc>
 <lastmod>2020-02-20T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://sjerrul.github.io/Blog/about/</loc>
+<loc>https://sjerrul.github.io/blog/about/</loc>
 </url>
 <url>
-<loc>https://sjerrul.github.io/Blog/</loc>
+<loc>https://sjerrul.github.io/blog/</loc>
 </url>
 <url>
-<loc>https://sjerrul.github.io/Blog/search/</loc>
+<loc>https://sjerrul.github.io/blog/search/</loc>
 </url>
 <url>
-<loc>https://sjerrul.github.io/Blog/categories/</loc>
+<loc>https://sjerrul.github.io/blog/categories/</loc>
 </url>
 </urlset>
