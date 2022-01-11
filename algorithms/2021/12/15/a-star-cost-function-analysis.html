@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>A* Cost function experimentation | Céryl Wiltink</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="A* Cost function experimentation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Some experimentation on different A* cost functions" />
+<meta property="og:description" content="Some experimentation on different A* cost functions" />
+<link rel="canonical" href="https://sjerrul.github.io/blog/algorithms/2021/12/15/a-star-cost-function-analysis.html" />
+<meta property="og:url" content="https://sjerrul.github.io/blog/algorithms/2021/12/15/a-star-cost-function-analysis.html" />
+<meta property="og:site_name" content="Céryl Wiltink" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-15T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="A* Cost function experimentation" />
+<script type="application/ld+json">
+{"headline":"A* Cost function experimentation","dateModified":"2021-12-15T00:00:00-06:00","url":"https://sjerrul.github.io/blog/algorithms/2021/12/15/a-star-cost-function-analysis.html","datePublished":"2021-12-15T00:00:00-06:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://sjerrul.github.io/blog/algorithms/2021/12/15/a-star-cost-function-analysis.html"},"description":"Some experimentation on different A* cost functions","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://sjerrul.github.io/blog/feed.xml" title="Céryl Wiltink" /><link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+<link rel="manifest" href="images/favicon/site.webmanifest"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Céryl Wiltink</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">A* Cost function experimentation</h1><p class="page-description">Some experimentation on different A* cost functions</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-12-15T00:00:00-06:00" itemprop="datePublished">
+        Dec 15, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#algorithms">algorithms</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#a-cost-function-experimentation">A* Cost Function Experimentation</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#the-challenge">The challenge</a></li>
+<li class="toc-entry toc-h2"><a href="#the-a-implementation">The A* Implementation</a></li>
+<li class="toc-entry toc-h2"><a href="#dijkstra">Dijkstra</a></li>
+<li class="toc-entry toc-h2"><a href="#manhattan-distance">Manhattan-Distance</a></li>
+<li class="toc-entry toc-h2"><a href="#manhattan-distance-with-a-factor">Manhattan-Distance with a factor</a></li>
+<li class="toc-entry toc-h2"><a href="#pythagoras-with-a-factor">Pythagoras with a factor</a></li>
+<li class="toc-entry toc-h2"><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul><h1 id="a-cost-function-experimentation">
+<a class="anchor" href="#a-cost-function-experimentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>A* Cost Function Experimentation</h1>
+
+<h2 id="introduction">
+<a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>For several years, I have participated in the Advent Of Code, a series of challenges in the month of december. This year, on day 15, the challenge required navigating a grid where each step had a certain costs between 0 and 9. It allowed me to try to solve the challenge using the A*-algorithm, a variation of Dijkstra’s Shortest Path Algorithm.</p>
+
+<p>Part of the A<em>-algorithm, where it deviates from Dijkstra’s is in determining a cost function where an estimation is made of the cost from a specific position to the end. A good cost function has the effect of “aiming” the algorithm more towards the goal, so it will no longer inspect all possible paths, but will prioritize paths that are closer and closer to the goal. This gives A</em> the benefit of being faster than Dijkstra in big search spaces (because you no longer have to inspect all possible options), but it might not give the exact shortest path, since the most optimal path might require a bit of a detour.</p>
+
+<p>Using this challenge, I have tried some experimentation on the cost function to see the effect on the algorithm, and tried to make the effect.</p>
+
+<p><img src="/blog/images/diagram.png" alt=""></p>
+
+<h2 id="the-challenge">
+<a class="anchor" href="#the-challenge" aria-hidden="true"><span class="octicon octicon-link"></span></a>The challenge</h2>
+
+<p>The challenge can be found on <a href="https://adventofcode.com/2021/day/15">Advent of Code 2021, day 15</a>. The gist is that a grid is provided with numbers that represent the “cost” of moving into that particular square. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1163751742
+1381373672
+2136511328
+3694931569
+7463417111
+1319128137
+1359912421
+3125421639
+1293138521
+2311944581
+</code></pre></div></div>
+
+<p>The actual puzzel input you get is bigger, and is a grid of 100x100 numbers.
+Now, the challenge is to find the shortest path (i.e. path with the least cost total) from the top-left to the bottom-right.</p>
+
+<h2 id="the-a-implementation">
+<a class="anchor" href="#the-a-implementation" aria-hidden="true"><span class="octicon octicon-link"></span></a>The A* Implementation</h2>
+
+<p>To get off to a flying start, below is my implementation of the A* algorithm. First I defined a new <code class="language-plaintext highlighter-rouge">Node</code> class to represent each square:</p>
+
+<pre><code class="language-C#">public class Node
+{
+    public Node Parent { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public int F =&gt; this.G + this.H;
+    public int G { get; set; }
+    public int H { get; set; }
+
+    public int Value { get; set; }
+}
+</code></pre>
+
+<p>Each square in the grid is a <code class="language-plaintext highlighter-rouge">Node</code>, keeping track of its location, the values <code class="language-plaintext highlighter-rouge">G</code>, <code class="language-plaintext highlighter-rouge">H</code>and <code class="language-plaintext highlighter-rouge">F</code>) that are important in the A* algorithm, its parent (Which can be used in the end to backtrack through the path that was found) and its value, which is just the cost of the square (the number in the puzzel input above)</p>
+
+<p>The full solution has  A* steps  annotated in the code below. There are some rendering calls that just render a visual reprentation on the screen, and a <code class="language-plaintext highlighter-rouge">Backtrack()</code> function that loops through the path and adds up the costs. These can be ignored for this example.</p>
+
+<pre><code class="language-C#">public async Task Part1()
+{
+	Node[][] grid = new Node[this.Input.Count()][];
+
+    // Parse the input to a 2d array of Nodes
+	for (int row = 0; row &lt; this.Input.Count(); row++)
+    {
+    	string line = this.Input.ElementAt(row);
+        grid[row] = line.Select((x, i) =&gt; new Node
+        {
+        	X = i,
+            Y = row,
+            Value = int.Parse(x.ToString())
+
+		}).ToArray();
+    }
+
+	// A*
+
+	// Init open/closed lists
+	IList&lt;Node&gt; open = new List&lt;Node&gt;();
+	IList&lt;Node&gt; closed = new List&lt;Node&gt;();
+
+	// Define start and end nodes
+	(int x, int y) start = (0, 0);
+	(int x, int y) end = (grid[0].GetLength(0) - 1, grid.GetLength(0) - 1);
+
+	// Add starting node to open
+	open.Add(grid.SelectMany(g =&gt; g).Single(n =&gt; n.X == start.x &amp;&amp; n.Y == start.y));
+
+	RenderGrid(this.Input);
+
+	// While open is not empty
+	while (open.Any())
+	{
+		// Get the current node with lowest F
+		Node current = open.OrderBy(x =&gt; x.F).First();
+		RenderCurrent(current);
+
+		// remove the currentNode from the openList
+		// add the currentNode to the closedList
+		open.Remove(current);
+		closed.Add(current);
+
+		// Check for goal
+		if (current.X == end.x &amp;&amp; current.Y == end.y)
+		{
+			// Current node is the goal node. Backtrack through parants to find the path
+			RenderGrid(this.Input);
+			RenderPath(current);
+
+			int cost = Backtrack(grid, current);
+			answers.WriteLine($"Answer Part 1: {cost}");
+			break;
+		}
+
+		// Get children of current node
+		IList&lt;Node&gt; children = Get4Children(grid, current);
+		foreach (var child in children)
+		{
+			if (closed.Contains(child, new NodeComparer()))
+			{
+				// Node already visited, do nothing
+				continue;
+			}
+
+			if (open.Contains(child, new NodeComparer()))
+			{
+				foreach (var openNode in open)
+				{
+					if ((openNode.X == child.X &amp;&amp; openNode.Y == child.Y) &amp;&amp; child.G &lt; openNode.G)
+					{
+						// this node has a lower G cost than the current node, set its parent to current
+						openNode.Parent = current;
+					}
+				}
+			}
+			else
+			{
+				child.G = current.G + child.Value; // Cost of current to child
+
+				// Cost function, this is a low estimate of current to the end.
+			    child.H = 0; //Dijkstra
+
+				child.Parent = current;
+				open.Add(child);
+			}
+
+		}
+	}
+}
+</code></pre>
+
+<p>Of note for this post is the calculation of the <code class="language-plaintext highlighter-rouge">H</code>. This allows us to “steer” the algorithm. Now, lets’ experiment with the cost function and see what happens.</p>
+
+<h2 id="dijkstra">
+<a class="anchor" href="#dijkstra" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dijkstra</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>child.H = 0;
+</code></pre></div></div>
+<p>Setting the Cost function to 0, or simple not doing any optimizations, the algorithm will basically execute Dijkstra’s algorithm and inspect all nodes. A visual representation looks like this:</p>
+
+<p><img src="/blog/images/a-star-experimentation/dijkstra.gif" alt=""></p>
+
+<p>One can see that all nodes are being inspected (painted magenta), and the optimal path is found at the end. Because all nodes are checked. This will guarantee the actual shortest path, since all nodes are checked, but the algorithm also checks nodes that are way out of the way of the path. going from the top-left to the bottom-right, it is probably not needed to check if there is an optimal path that goes through the top-right or bottom-left.</p>
+
+<p>Let’s try something else.</p>
+
+<h2 id="manhattan-distance">
+<a class="anchor" href="#manhattan-distance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manhattan-Distance</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>child.H = Math.Abs(end.x - child.X) + Math.Abs(end.y - child.Y);
+</code></pre></div></div>
+
+<p>One interpretation of the cost from any point to the end is the Manhattan distance. This is basically the number of steps you have to walk down and right to get from any point to the end. The Algorithm now looks like this:</p>
+
+<p><img src="/blog/images/a-star-experimentation/manhattan.gif" alt=""></p>
+
+<p>While there seems to be a little more emphasis on the algorithm to prioritize the bottom-right direction, it is not really noticable. One problem might be that the search space is relatively small. It is just a 100x100 box. Maybe we can add a factor to the cost to really emphasize the cost?</p>
+
+<h2 id="manhattan-distance-with-a-factor">
+<a class="anchor" href="#manhattan-distance-with-a-factor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manhattan-Distance with a factor</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>child.H = (Math.Abs(end.x - child.X) + Math.Abs(end.y - child.Y)) * factor;
+</code></pre></div></div>
+
+<p>Multiplying the cost by a factor maybe helps to offset this small search space and really force the algorithm in the direction we want.</p>
+
+<p>Lets try a factor of 2:</p>
+
+<p><img src="/blog/images/a-star-experimentation/manhattan-2.gif" alt=""></p>
+
+<p>That definately looks like something! It completely skips the top-right! We still inspect the bottom-left, but it might just be lower numbers in general down there.</p>
+
+<p>Maybe a factor of 3?</p>
+
+<p><img src="/blog/images/a-star-experimentation/manhattan-3.gif" alt=""></p>
+
+<p>That is very pronounced! We really skip a lot of the grid, and really focus on just checking interesting nodes that bring us closed to the end. Interesting are the branches that shoot out when a clump of nodes that looked promising at first suddenly had a higher cost than a new path that was found more in the direction of the goal.</p>
+
+<h2 id="pythagoras-with-a-factor">
+<a class="anchor" href="#pythagoras-with-a-factor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pythagoras with a factor</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>child.H = ((int)Math.Sqrt(Math.Pow(end.x - child.X, 2) + Math.Pow(end.y - child.Y, 2))) * factor;
+</code></pre></div></div>
+
+<p>Instead of using the Manhattan distance, which is an over-estimation, maybe Pythagoras works better? I have tried this with several factors and below are the results for factor 4:</p>
+
+<p><img src="/blog/images/a-star-experimentation/pythagoras-4.gif" alt=""></p>
+
+<p>and factor 5:</p>
+
+<p><img src="/blog/images/a-star-experimentation/pythagoras-5.gif" alt=""></p>
+
+<p>Now there is some real force pushing us to the bottom-right. It is so much faster! But did we really found the optimal path?</p>
+
+<h2 id="conclusion">
+<a class="anchor" href="#conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2>
+
+<p>Playing with the cost function of the A* is a great way to optimize your pathfinding algorithm. The more powerful the function, the less of the search space needs to be inspected and the faster a result is gotten. However we forego the idea that we really have the most optimal path, the actual shortest path might be one we didn’t inspect.</p>
+
+<p>As always, there is a trade-off between speed and correctness, so experiment and find the optimal solution!</p>
+
+  </div><a class="u-url" href="/blog/algorithms/2021/12/15/a-star-cost-function-analysis.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Personal page</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/Sjerrul" target="_blank" title="Sjerrul"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
