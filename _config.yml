@@ -7,7 +7,7 @@
 # https://learnxinyminutes.com/docs/yaml/
 
 title: Céryl Wiltink
-description: Personal page
+description:
 github_username: Sjerrul
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "Blog"
@@ -39,7 +39,7 @@ baseurl: "/blog" # the subpath of your site, e.g. "/blog".
 # Github and twitter are optional:
 minima:
   social_links:
-    twitter: fastdotai
+    twitter: 
     github: Sjerrul
 
 # Set this to true to get LaTeX math equation support
